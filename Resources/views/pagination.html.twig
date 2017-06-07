@@ -1,0 +1,72 @@
+{% if page.availablePages > 1 %}
+    {% set route = customRoute is not null ? customRoute : app.request.attributes.get("_route") %}
+    {% set routeParams = app.request.attributes.all %}
+    {% if app.request.query.all is not empty %}
+        {% set routeParams = routeParams|merge(app.request.query.all) %}
+    {% endif %}
+    {% if customParameters is not empty %}
+        {% set routeParams = routeParams|merge(customParameters) %}
+    {% endif %}
+    {% set routeParams = routeParams|merge({ _route: null, _route_params: null }) %}
+
+    <div class="ui centered padded grid">
+        <ul class="ui pagination menu">
+            {% set limit = 6 %}
+            {% set moreThanLimitpages = page.availablePages > limit ? true : false %}
+            {% set isFirst = page.currentPage == 1 ? true : false %}
+            {% set isLast = page.currentPage == page.availablePages ? true : false %}
+            {% set majorButtons = 3 %}
+            {% set minorButtons = 2 %}
+
+            <li>
+                <a class="icon item{% if isFirst %} disabled{% endif %}"{% if not isFirst %} href="{{ path(route, routeParams|setPage(page.currentPage - 1, paramPrefix)) }}"{% endif %}>
+                    <i class="fa fa-angle-double-left"></i>
+                </a>
+            </li>
+
+            {% if moreThanLimitpages %}
+
+                {% set firstMajor = page.currentPage <= (page.availablePages/2) %}
+
+                {% set StartIndex = (page.currentPage > 2) and firstMajor
+                ? page.currentPage - 1
+                : 1 %}
+
+                {% set fcnt = firstMajor ? majorButtons : minorButtons %}
+
+                {% for i in 1..fcnt %}
+                    {% set index = StartIndex + loop.index0 %}
+                    <li><a{% if index != page.currentPage %} href="{{ path(route, routeParams|setPage(index, paramPrefix)) }}"{% endif %}
+                            class="{% if index == page.currentPage %}active {% endif %}item">{{ index }}</a></li>
+                {% endfor %}
+
+                <li><div class="disabled item">...</div></li>
+
+                {% set endIndex = page.currentPage == page.availablePages
+                ? page.availablePages
+                : page.currentPage + 1 %}
+
+                {% set scnt = firstMajor ? minorButtons : majorButtons %}
+
+                {% for i in 1..scnt %}
+                    {% set index = firstMajor ? page.availablePages - minorButtons + i : endIndex - loop.revindex0 %}
+                    <li><a{% if index != page.currentPage %} href="{{ path(route, routeParams|setPage(index, paramPrefix)) }}"{% endif %}
+                            class="{% if index == page.currentPage %}active {% endif %}item">{{ index }}</a></li>
+                {% endfor %}
+
+            {% else %}
+                {% for i in 1..page.availablePages %}
+                    {% set index = loop.index %}
+                    <li><a{% if index != page.currentPage %} href="{{ path(route, routeParams|setPage(index, paramPrefix)) }}"{% endif %}
+                            class="{% if index == page.currentPage %}active {% endif %}item">{{ index }}</a></li>
+                {% endfor %}
+            {% endif %}
+
+            <li>
+                <a class="icon item{% if isLast %} disabled{% endif %}"{% if not isLast %} href="{{ path(route, routeParams|setPage(page.currentPage + 1, paramPrefix)) }}"{% endif %}>
+                    <i class="fa fa-angle-double-right"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endif %}

@@ -1,0 +1,23 @@
+{
+    "name": "everlutionsk/pagination-bundle",
+    "description": "Symfony bundle for Paginate the list of items",
+    "type": "symfony-bundle",
+    "autoload": {
+        "psr-4": {
+            "Everlution\\Pagination\\": ""
+        }
+    },
+    "require": {
+        "php": "^7.0",
+        "symfony/framework-bundle": "^3.0",
+        "symfony/config": "^3.0",
+        "symfony/dependency-injection": "^3.0",
+        "symfony/http-foundation": "^3.0",
+        "symfony/http-kernel": "^3.0",
+        "symfony/templating": "^3.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {"name": "Ivan Barlog", "email": "ivan.barlog@everlution.sk"}
+    ]
+}
