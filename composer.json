@@ -4,7 +4,7 @@
     "type": "symfony-bundle",
     "autoload": {
         "psr-4": {
-            "Everlution\\Pagination\\": ""
+            "Everlution\\Pagination\\": "src/"
         }
     },
     "require": {
