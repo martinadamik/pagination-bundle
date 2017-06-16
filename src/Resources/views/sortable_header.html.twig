@@ -1,0 +1,11 @@
+{% set everlution_pagination_sort_route = app.request.attributes.get('_route') %}
+{% set everlution_pagination_sort_parameters = app.request.attributes.get('_route_params') %}
+
+<th class="{{ class }}">
+  <a href="{{ path(everlution_pagination_sort_route, everlution_pagination_sort_parameters|merge(query)) }}">
+    {{ label|trans }}
+    <i class="fa {{ icon }}"></i>
+  </a>
+</th>
+
+

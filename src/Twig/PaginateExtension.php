@@ -9,7 +9,7 @@ use Everlution\PaginationBundle\Pagination\Page;
 /**
  * @author Ivan Barlog <ivan.barlog@everlution.sk>
  */
-class PaginateExtension extends \Twig_Extension
+class PaginateExtension extends BaseExtension
 {
     const DEFAULT_TEMPLATE = 'EverlutionPaginationBundle::pagination.html.twig';
 
@@ -34,8 +34,6 @@ class PaginateExtension extends \Twig_Extension
                 $template,
                 [
                     'page' => $page,
-//                    'currentPage' => $paginator['currentPage'],
-//                    'pagesCount' => $paginator['availablePages'],
                     'customParameters' => $customParameters,
                     'customRoute' => $customRoute,
                     'paramPrefix' => $paramPrefix,
@@ -53,14 +51,14 @@ class PaginateExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('paginate', [$this, 'renderPagination'], ['is_safe' => ['html']]),
+            $this->registerFunction('paginate', 'renderPagination'),
         ];
     }
 
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('setPage', [$this, 'setPage']),
+            $this->registerFilter('setPage', 'setPage'),
         ];
     }
 }

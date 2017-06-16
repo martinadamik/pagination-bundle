@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Everlution\PaginationBundle\Pagination\Sort;
 
-use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @author Ivan Barlog <ivan.barlog@everlution.sk>
  */
 interface SortQuery
 {
-    public function addSort(Query $query): Query;
+    public function addSorting(QueryBuilder $builder): QueryBuilder;
 }

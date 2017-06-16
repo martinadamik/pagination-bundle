@@ -15,7 +15,7 @@ class QueryPaginatorNotInitialized extends PaginationException
     {
         parent::__construct(
             sprintf(
-                'In order to use %s:paginate() you need to set the query first.',
+                'In order to use %s:paginate() you need to set the query builder first.',
                 QueryPagination::class
             )
         );

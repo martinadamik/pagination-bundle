@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Everlution\PaginationBundle\Pagination;
 
-use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Everlution\PaginationBundle\Pagination\Filter\FilterQuery;
 use Everlution\PaginationBundle\Pagination\Sort\SortQuery;
@@ -16,8 +16,8 @@ class QueryPagination implements QueryToPagination
 {
     const DEFAULT_MAX_RESULTS = 100;
 
-    /** @var Query */
-    private $query = null;
+    /** @var QueryBuilder */
+    private $builder = null;
     /** @var FilterQuery */
     private $filterQuery;
     /** @var SortQuery */
@@ -41,12 +41,12 @@ class QueryPagination implements QueryToPagination
             throw new MaxResultsExceeded($this->maxResults, $limit);
         }
 
-        if (false === $this->query instanceof Query) {
+        if (false === $this->builder instanceof QueryBuilder) {
             throw new QueryPaginatorNotInitialized();
         }
 
-        $query = $this->filterQuery->addFilter($this->query);
-        $query = $this->sortQuery->addSort($query);
+        $query = $this->filterQuery->addFilter($this->builder);
+        $query = $this->sortQuery->addSorting($query);
 
         $paginator = new Paginator($query);
         $paginator
@@ -58,9 +58,9 @@ class QueryPagination implements QueryToPagination
         return new ListPage($paginator);
     }
 
-    public function setQuery(Query $query): Pagination
+    public function setQueryBuilder(QueryBuilder $builder): Pagination
     {
-        $this->query = $query;
+        $this->builder = $builder;
 
         return $this;
     }

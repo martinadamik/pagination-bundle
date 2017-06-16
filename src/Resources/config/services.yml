@@ -33,9 +33,38 @@ services:
       - { name: kernel.event_listener, event: kernel.request }
 
   # TWIG EXTENSION
-  paginatin.twig.extension.paginate:
+  pagination.twig.extension.paginate:
     class: Everlution\PaginationBundle\Twig\PaginateExtension
     arguments:
       - '@twig'
     tags:
       - { name: twig.extension }
+
+  pagination.twig.extension.sortable_header:
+    class: Everlution\PaginationBundle\Twig\SortableHeaderExtension
+    arguments:
+      - '@twig'
+      - '@pagination.sort.direction_helper'
+      - '@pagination.sort.icon.font_awsome'
+      - '%everlution.pagination.sortable_header_template%'
+    tags:
+      - { name: twig.extension }
+
+  # SORTABLE HEADER
+  pagination.sort.direction_helper:
+    class: Everlution\PaginationBundle\Sort\Properties\DirectionHelper
+    arguments:
+      - '@request_stack'
+
+  pagination.sort.icon.font_awsome:
+    class: Everlution\PaginationBundle\Sort\Properties\Icon\FontAwesome
+
+  pagination.sort.column.doctrine_factory:
+    class: Everlution\PaginationBundle\Pagination\Sort\Column\DoctrineColumnFactory
+
+  pagination.sort.request_sort_query:
+    class: Everlution\PaginationBundle\Sort\RequestSortQuery
+    arguments:
+      - '@request_stack'
+      - '@pagination.sort.column.doctrine_factory'
+      - '%everlution.pagination.default_sort_query_string%'
