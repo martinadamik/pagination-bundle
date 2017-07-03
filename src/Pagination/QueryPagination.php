@@ -6,8 +6,9 @@ namespace Everlution\PaginationBundle\Pagination;
 
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Everlution\PaginationBundle\Pagination\Filter\FilterQuery;
+use Everlution\PaginationBundle\Pagination\Filter\FilterContainerInterface;
 use Everlution\PaginationBundle\Pagination\Sort\SortQuery;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Ivan Barlog <ivan.barlog@everlution.sk>
@@ -18,24 +19,24 @@ class QueryPagination implements QueryToPagination
 
     /** @var QueryBuilder */
     private $builder = null;
-    /** @var FilterQuery */
-    private $filterQuery;
+    /** @var FilterContainerInterface */
+    private $filterContainer;
     /** @var SortQuery */
     private $sortQuery;
     /** @var int */
     private $maxResults;
 
     public function __construct(
-        FilterQuery $filterQuery,
+        FilterContainerInterface $filterContainer,
         SortQuery $sortQuery,
         int $maxResults = self::DEFAULT_MAX_RESULTS
     ) {
-        $this->filterQuery = $filterQuery;
+        $this->filterContainer = $filterContainer;
         $this->sortQuery = $sortQuery;
         $this->maxResults = $maxResults;
     }
 
-    public function paginate(int $limit, int $offset): Page
+    public function paginate(int $limit, int $offset, array $options = []): Page
     {
         if ($limit > $this->maxResults) {
             throw new MaxResultsExceeded($this->maxResults, $limit);
@@ -45,8 +46,12 @@ class QueryPagination implements QueryToPagination
             throw new QueryPaginatorNotInitialized();
         }
 
-        $query = $this->filterQuery->addFilter($this->builder);
-        $query = $this->sortQuery->addSorting($query);
+        $optionsResolver = new OptionsResolver();
+        $this->filterContainer->configureFilters($optionsResolver);
+        $options = $optionsResolver->resolve($options);
+
+        $this->filterContainer->appendFilters($this->builder, $options);
+        $query = $this->sortQuery->addSorting($this->builder);
 
         $paginator = new Paginator($query);
         $paginator

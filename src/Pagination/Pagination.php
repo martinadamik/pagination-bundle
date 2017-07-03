@@ -9,5 +9,11 @@ namespace Everlution\PaginationBundle\Pagination;
  */
 interface Pagination
 {
-    public function paginate(int $limit, int $offset): Page;
+    /**
+     * @param int $limit
+     * @param int $offset
+     * @param array $options
+     * @return Page
+     */
+    public function paginate(int $limit, int $offset, array $options = []): Page;
 }
