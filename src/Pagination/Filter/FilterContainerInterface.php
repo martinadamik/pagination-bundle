@@ -21,7 +21,7 @@ interface FilterContainerInterface
     public function appendFilters(QueryBuilder $builder, array $options = []): void;
 
     /**
-     * @param OptionsResolver $options
+     * @param OptionsResolver $optionsResolver
      */
-    public function configureFilters(OptionsResolver $options): void;
+    public function configureFilters(OptionsResolver $optionsResolver): void;
 }

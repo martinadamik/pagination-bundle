@@ -43,10 +43,10 @@ class FilterContainer implements FilterContainerInterface
         }
     }
 
-    public function configureFilters(OptionsResolver $options): void
+    public function configureFilters(OptionsResolver $optionsResolver): void
     {
         foreach ($this->filters as $filter) {
-            $filter->configureOptions($options);
+            $filter->configureOptions($optionsResolver);
         }
     }
 
