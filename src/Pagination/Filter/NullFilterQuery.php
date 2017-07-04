@@ -5,14 +5,22 @@ declare(strict_types=1);
 namespace Everlution\PaginationBundle\Pagination\Filter;
 
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @author Ivan Barlog <ivan.barlog@everlution.sk>
+ * Class NullFilterQuery.
+ *
+ * @author Richard Popelis <richard@popelis.sk>
  */
-class NullFilterQuery implements FilterQuery
+final class NullFilterQuery implements FilterQuery
 {
-    public function addFilter(QueryBuilder $builder): QueryBuilder
+    public function appendFilter(QueryBuilder $builder, array $options = []): void
     {
-        return $builder;
+        return;
+    }
+
+    public function configureOptions(OptionsResolver $optionsResolver): void
+    {
+        return;
     }
 }

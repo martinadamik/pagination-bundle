@@ -8,20 +8,20 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Interface FilterQuery.
+ * Interface FilterContainerInterface.
  *
  * @author Richard Popelis <richard@popelis.sk>
  */
-interface FilterQuery
+interface FilterContainerInterface
 {
     /**
      * @param QueryBuilder $builder
      * @param array $options
      */
-    public function appendFilter(QueryBuilder $builder, array $options = []): void;
+    public function appendFilters(QueryBuilder $builder, array $options = []): void;
 
     /**
      * @param OptionsResolver $optionsResolver
      */
-    public function configureOptions(OptionsResolver $optionsResolver): void;
+    public function configureFilters(OptionsResolver $optionsResolver): void;
 }

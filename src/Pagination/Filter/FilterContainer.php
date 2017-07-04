@@ -1,13 +1,53 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Everlution\PaginationBundle\Pagination\Filter;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
- * @author Ivan Barlog <ivan.barlog@everlution.sk>
+ * Class FilterContainer.
+ *
+ * @author Richard Popelis <richard@popelis.sk>
  */
-interface FilterContainer
+class FilterContainer implements FilterContainerInterface
 {
-    public function getFilters(): array;
+    /**
+     * @var Collection|FilterQuery[]
+     */
+    private $filters;
+
+    /**
+     * FilterContainer constructor.
+     * @param array $filters
+     */
+    public function __construct(array $filters)
+    {
+        $this->filters = new ArrayCollection();
+        foreach ($filters as $filter) {
+            $this->addFilter($filter);
+        }
+    }
+
+    protected function addFilter(FilterQuery $filterQuery): void
+    {
+        $this->filters->add($filterQuery);
+    }
+
+    public function appendFilters(QueryBuilder $builder, array $options = []): void
+    {
+        foreach ($this->filters as $filter) {
+            $filter->appendFilter($builder, $options);
+        }
+    }
+
+    public function configureFilters(OptionsResolver $optionsResolver): void
+    {
+        foreach ($this->filters as $filter) {
+            $filter->configureOptions($optionsResolver);
+        }
+    }
+
 }
