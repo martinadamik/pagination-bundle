@@ -256,11 +256,28 @@ services:
       - "@user.sort.rules_provider"
       - '@pagination.sort.request_sort_query'
 
+
+  # implementation of Doctrine filters
+  user.filter.name:
+    class: Library\UseCase\User\Filter\Name
+    public: false
+  user.filter.job_title:
+    class: Library\UseCase\User\Filter\JobTitle
+    public: false
+    
+  # definition of user filter container with all filters
+  user.filter.container:
+    class: Everlution\PaginationBundle\Pagination\Filter\FilterContainer
+    arguments:
+      -
+        - "@user.filter.name"
+        - '@user.filter.job_title'
+      
   # query pagination with concrete sort for Docrine
   user.pagination:
     class: Everlution\PaginationBundle\Pagination\QueryPagination
     arguments:
-      - '@pagination.filter.null'
+      - '@user.filter.container'
       - '@user.sort.doctrine_sort_query'
       - '%everlution.pagination.max_page_size%'
 ```
