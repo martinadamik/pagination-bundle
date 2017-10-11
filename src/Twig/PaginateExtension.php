@@ -16,22 +16,28 @@ class PaginateExtension extends BaseExtension
     /** @var \Twig_Environment */
     private $templating;
 
-    public function __construct(\Twig_Environment $templating)
+    /** @var string */
+    private $paginationTemplate;
+
+    public function __construct(
+        \Twig_Environment $templating,
+        string $paginationTemplate = self::DEFAULT_TEMPLATE
+    )
     {
         $this->templating = $templating;
+        $this->paginationTemplate = $paginationTemplate;
     }
 
     public function renderPagination(
         Page $page,
         array $customParameters = [],
-        string $template = self::DEFAULT_TEMPLATE,
         string $customRoute = null,
         string $paramPrefix = ''
     ): string {
         return $this
             ->templating
             ->render(
-                $template,
+                $this->paginationTemplate,
                 [
                     'page' => $page,
                     'customParameters' => $customParameters,

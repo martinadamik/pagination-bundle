@@ -21,6 +21,7 @@ class EverlutionPaginationExtension extends Extension
         $container->setParameter('everlution.pagination.max_page_size', $config['max_page_size']);
         $container->setParameter('everlution.pagination.default_page_size', $config['default_page_size']);
         $container->setParameter('everlution.pagination.sortable_header_template', $config['sortable_header_template']);
+        $container->setParameter('everlution.pagination.pagination_template', $config['pagination_template']);
         $container->setParameter('everlution.pagination.default_sort_query_string', $config['default_sort_query_string']);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

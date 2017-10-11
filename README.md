@@ -48,6 +48,7 @@ everlution_pagination:
     default_page_size: 3 # defaults to 20
     max_page_size: 10 # defaults to 100
     sortable_header_template: @AppBundle::sortable_header.html.twig # template for sortable header
+    pagination_template: @AppBundle::pagination.html.twig # template for pagination
     default_sort_query_string: some_string # defaults to 'sort'
 ```
 
