@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Everlution\PaginationBundle\Pagination;
 
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Everlution\PaginationBundle\Pagination\Filter\FilterContainerInterface;
@@ -36,7 +37,7 @@ class QueryPagination implements QueryToPagination
         $this->maxResults = $maxResults;
     }
 
-    public function paginate(int $limit, int $offset, array $options = []): Page
+    public function paginate(int $limit, int $offset, array $options = [], $hydrationMode = Query::HYDRATE_OBJECT): Page
     {
         if ($limit > $this->maxResults) {
             throw new MaxResultsExceeded($this->maxResults, $limit);
@@ -57,6 +58,7 @@ class QueryPagination implements QueryToPagination
         $paginator
             ->setUseOutputWalkers(false)
             ->getQuery()
+            ->setHydrationMode($hydrationMode)
             ->setFirstResult($offset)
             ->setMaxResults($limit);
 
