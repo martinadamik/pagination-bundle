@@ -12,4 +12,6 @@ use Doctrine\ORM\QueryBuilder;
 interface QueryToPagination extends Pagination
 {
     public function setQueryBuilder(QueryBuilder $builder): Pagination;
+
+    public function setHydrationMode(string $hydrationMode): Pagination;
 }

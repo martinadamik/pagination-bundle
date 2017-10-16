@@ -120,15 +120,19 @@ class ListUsers
     private $requestStack;
     /** @var Pagination */
     private $pagination;
+    /** @var int */
+    private $pageSize;
 
     public function __construct(
         UserViewListQuery $listQuery,
         QueryToPagination $pagination,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        int $pageSize
     ) {
         $this->requestStack = $requestStack;
         $this->listQuery = $listQuery;
         $this->pagination = $pagination;
+        $this->pageSize = $pageSize
     }
 
     public function getPage(): Page
@@ -139,10 +143,13 @@ class ListUsers
             $query = $this->listQuery->getUserViewListQuery();
             $this->pagination->setQueryBuilder($query);
 
+            $page = $request->get('page');
+            // set some custom hydrator if you have any
+            $this->pagination->setHydrationMode('UserViewListHydrator');
             // limit and offsete here are provided automagically by RequestTransformer from {page} parameter of URL
             return $this->pagination->paginate(
-                (int) $request->get('limit', Page::DEFAULT_PAGE_SIZE),
-                (int) $request->get('offset', self::DEFAULT_PAGINATION_OFFSET)
+                $this->pageSize,
+                $this->pageSize * ($page - 1)
             );
         } catch (MaxResultsExceeded $exception) {
             throw new WrongPaginationArgument($exception->getMessage());

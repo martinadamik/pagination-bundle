@@ -1,37 +1,4 @@
 services:
-  # GENERAL
-  pagination.query_pagination:
-    class: Everlution\PaginationBundle\Pagination\QueryPagination
-    arguments:
-      - '@pagination.filter.null'
-      - '@pagination.sort.null'
-      - '%everlution.pagination.max_page_size%'
-
-  pagination.filter.null:
-    class: Everlution\PaginationBundle\Pagination\Filter\NullFilterQuery
-
-  pagination.sort.null:
-    class: Everlution\PaginationBundle\Pagination\Sort\NullSortQuery
-
-  # TRANSFORMER
-  pagination.transformer.page_to_limit_offset:
-    class: Everlution\PaginationBundle\Pagination\Transformer\PageToLimitOffset
-    public: false
-
-  pagination.transformer.page_to_limit_offset_query_transformer:
-    class: Everlution\PaginationBundle\Pagination\Transformer\PageToLimitOffsetQueryTransformer
-    arguments:
-      - '@pagination.transformer.page_to_limit_offset'
-      - '%everlution.pagination.default_page_size%'
-
-  # EVENT LISTENER
-  pagination.event.listener.page_to_limit_offset_transformer:
-    class: Everlution\PaginationBundle\Event\Listener\PageToLimitOffsetTransformer
-    arguments:
-      - '@pagination.transformer.page_to_limit_offset_query_transformer'
-    tags:
-      - { name: kernel.event_listener, event: kernel.request }
-
   # TWIG EXTENSION
   pagination.twig.extension.paginate:
     class: Everlution\PaginationBundle\Twig\PaginateExtension

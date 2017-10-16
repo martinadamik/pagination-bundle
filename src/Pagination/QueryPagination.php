@@ -26,6 +26,8 @@ class QueryPagination implements QueryToPagination
     private $sortQuery;
     /** @var int */
     private $maxResults;
+    /** @var string */
+    private $hydrationMode = '';
 
     public function __construct(
         FilterContainerInterface $filterContainer,
@@ -37,7 +39,7 @@ class QueryPagination implements QueryToPagination
         $this->maxResults = $maxResults;
     }
 
-    public function paginate(int $limit, int $offset, array $options = [], $hydrationMode = Query::HYDRATE_OBJECT): Page
+    public function paginate(int $limit, int $offset, array $options = []): Page
     {
         if ($limit > $this->maxResults) {
             throw new MaxResultsExceeded($this->maxResults, $limit);
@@ -58,7 +60,7 @@ class QueryPagination implements QueryToPagination
         $paginator
             ->setUseOutputWalkers(false)
             ->getQuery()
-            ->setHydrationMode($hydrationMode)
+            ->setHydrationMode($this->getHydrationMode() ?: Query::HYDRATE_OBJECT)
             ->setFirstResult($offset)
             ->setMaxResults($limit);
 
@@ -80,6 +82,18 @@ class QueryPagination implements QueryToPagination
     public function setMaxResults(int $maxResults): Pagination
     {
         $this->maxResults = $maxResults;
+
+        return $this;
+    }
+
+    public function getHydrationMode(): string
+    {
+        return $this->hydrationMode;
+    }
+
+    public function setHydrationMode(string $hydrationMode): Pagination
+    {
+        $this->hydrationMode = $hydrationMode;
 
         return $this;
     }
