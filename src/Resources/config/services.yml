@@ -36,3 +36,9 @@ services:
       - '@request_stack'
       - '@pagination.sort.column.doctrine_factory'
       - '%everlution.pagination.default_sort_query_string%'
+
+  pagination.paginator.abstract:
+    class: Everlution\PaginationBundle\Pagination\AbstractPaginator
+
+  pagination.paginator.doctrine:
+    class: Everlution\PaginationBundle\Pagination\DoctrinePaginator

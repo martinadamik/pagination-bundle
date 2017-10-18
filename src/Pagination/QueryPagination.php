@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Everlution\PaginationBundle\Pagination;
 
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Everlution\PaginationBundle\Pagination\Filter\FilterContainerInterface;
 use Everlution\PaginationBundle\Pagination\Sort\SortQuery;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,22 +22,24 @@ class QueryPagination implements QueryToPagination
     private $filterContainer;
     /** @var SortQuery */
     private $sortQuery;
+    /** @var AbstractPaginator */
+    private $paginator;
     /** @var int */
     private $maxResults;
-    /** @var string */
-    private $hydrationMode = '';
 
     public function __construct(
         FilterContainerInterface $filterContainer,
         SortQuery $sortQuery,
+        AbstractPaginator $paginator,
         int $maxResults = self::DEFAULT_MAX_RESULTS
     ) {
         $this->filterContainer = $filterContainer;
         $this->sortQuery = $sortQuery;
+        $this->paginator = $paginator;
         $this->maxResults = $maxResults;
     }
 
-    public function paginate(int $limit, int $offset, array $options = []): Page
+    public function paginate(int $limit, int $offset, array $parameters = []): Page
     {
         if ($limit > $this->maxResults) {
             throw new MaxResultsExceeded($this->maxResults, $limit);
@@ -51,20 +51,18 @@ class QueryPagination implements QueryToPagination
 
         $optionsResolver = new OptionsResolver();
         $this->filterContainer->configureFilters($optionsResolver);
-        $options = $optionsResolver->resolve($options);
+        $options = $optionsResolver->resolve($parameters);
 
         $this->filterContainer->appendFilters($this->builder, $options);
-        $query = $this->sortQuery->addSorting($this->builder);
+        $queryBuilder = $this->sortQuery->addSorting($this->builder);
 
-        $paginator = new Paginator($query);
-        $paginator
-            ->setUseOutputWalkers(false)
-            ->getQuery()
-            ->setHydrationMode($this->getHydrationMode() ?: Query::HYDRATE_OBJECT)
-            ->setFirstResult($offset)
-            ->setMaxResults($limit);
+        $this->paginator
+            ->setBuilder($queryBuilder)
+            ->setOffset($offset)
+            ->setLimit($limit)
+            ->setQuery();
 
-        return new ListPage($paginator);
+        return new ListPage($this->paginator);
     }
 
     public function setQueryBuilder(QueryBuilder $builder): Pagination
@@ -82,18 +80,6 @@ class QueryPagination implements QueryToPagination
     public function setMaxResults(int $maxResults): Pagination
     {
         $this->maxResults = $maxResults;
-
-        return $this;
-    }
-
-    public function getHydrationMode(): string
-    {
-        return $this->hydrationMode;
-    }
-
-    public function setHydrationMode(string $hydrationMode): Pagination
-    {
-        $this->hydrationMode = $hydrationMode;
 
         return $this;
     }

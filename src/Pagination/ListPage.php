@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Everlution\PaginationBundle\Pagination;
 
-use Doctrine\ORM\Tools\Pagination\Paginator;
-
 /**
  * @author Ivan Barlog <ivan.barlog@everlution.sk>
  */
@@ -22,16 +20,19 @@ class ListPage implements Page
     /** @var array */
     private $items;
 
+    /**
+     * ListPage constructor.
+     * @param Paginator $paginator
+     */
     public function __construct(Paginator $paginator)
     {
-        $offset = $paginator->getQuery()->getFirstResult();
-        $limit = $paginator->getQuery()->getMaxResults();
+        $offset = $paginator->getOffset();
+        $limit = $paginator->getLimit();
 
-        $this->items = iterator_to_array($paginator);
+        $this->items = $paginator->getResults();
         $this->currentPage = (int) ceil($offset / $limit) + 1;
-        $itemsCount = $paginator->count();
-        $this->availablePages = (int) ceil($itemsCount / $limit);
-        $this->availableItems = $itemsCount;
+        $this->availableItems = $paginator->count();
+        $this->availablePages = (int) ceil($this->availableItems / $limit);
         $this->pageSize = $limit;
     }
 

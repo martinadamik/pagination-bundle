@@ -12,8 +12,8 @@ interface Pagination
     /**
      * @param int $limit
      * @param int $offset
-     * @param array $options
+     * @param array $parameters
      * @return Page
      */
-    public function paginate(int $limit, int $offset, array $options = []): Page;
+    public function paginate(int $limit, int $offset, array $parameters = []): Page;
 }
