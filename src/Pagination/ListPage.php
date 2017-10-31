@@ -22,14 +22,16 @@ class ListPage implements Page
 
     /**
      * ListPage constructor.
+     *
      * @param Paginator $paginator
+     * @param DataTransformer $dataTransformer
      */
-    public function __construct(Paginator $paginator)
+    public function __construct(Paginator $paginator, DataTransformer $dataTransformer)
     {
         $offset = $paginator->getOffset();
         $limit = $paginator->getLimit();
 
-        $this->items = $paginator->getResults();
+        $this->items = $dataTransformer->transform($paginator->getResults());
         $this->currentPage = (int) ceil($offset / $limit) + 1;
         $this->availableItems = $paginator->count();
         $this->availablePages = (int) ceil($this->availableItems / $limit);

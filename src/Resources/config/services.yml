@@ -42,3 +42,6 @@ services:
 
   pagination.paginator.doctrine:
     class: Everlution\PaginationBundle\Pagination\DoctrinePaginator
+
+  pagination.data_transformer.default:
+    class: Everlution\PaginationBundle\Pagination\DefaultDataTransformer

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Everlution\PaginationBundle\Pagination;
+
 use Doctrine\ORM\QueryBuilder;
 use Everlution\PaginationBundle\Pagination\Filter\FilterContainer;
 use Everlution\PaginationBundle\Pagination\Sort\SortRulesContainer;

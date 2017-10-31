@@ -26,17 +26,21 @@ class QueryPagination implements QueryToPagination
     private $paginator;
     /** @var int */
     private $maxResults;
+    /** @var DataTransformer */
+    private $transformer = DefaultDataTransformer::class;
 
     public function __construct(
         FilterContainerInterface $filterContainer,
         SortQuery $sortQuery,
         AbstractPaginator $paginator,
-        int $maxResults = self::DEFAULT_MAX_RESULTS
+        int $maxResults = self::DEFAULT_MAX_RESULTS,
+        DataTransformer $transformer
     ) {
         $this->filterContainer = $filterContainer;
         $this->sortQuery = $sortQuery;
         $this->paginator = $paginator;
         $this->maxResults = $maxResults;
+        $this->transformer = $transformer;
     }
 
     public function paginate(int $limit, int $offset, array $parameters = []): Page
@@ -62,7 +66,7 @@ class QueryPagination implements QueryToPagination
             ->setLimit($limit)
             ->setQuery();
 
-        return new ListPage($this->paginator);
+        return new ListPage($this->paginator, $this->transformer);
     }
 
     public function setQueryBuilder(QueryBuilder $builder): Pagination
